@@ -32,6 +32,7 @@ struct matrix
     my_matrix<16, 16>   C_16;
     my_matrix<32, 32>   C_32;
     my_matrix<64, 64>   C_64;
+
 };
 
 
@@ -44,10 +45,8 @@ void init_multiply_matrix() {
     boost::random::uniform_int_distribution<> dist{1, 3};
 
     std::vector<boost::thread> thrd;
-    for(int j = 0; j < 8; ++j) {
 
-        if(j == 0) {
-        thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+        thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
 
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_8 = std::make_unique<std::vector<size_t>>();
@@ -62,9 +61,8 @@ void init_multiply_matrix() {
                     mult_siml<8, 8>(mtrx.A_8, mtrx.B_8, mtrx.C_8);
                     std::cout <<"Simple\t8x8 " << tmr.format();
         }));
-        }
-        if(j == 1) {
-        thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+        thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_16 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 16*16; i++)
@@ -78,9 +76,8 @@ void init_multiply_matrix() {
                     mult_siml<16, 16>(mtrx.A_16, mtrx.B_16, mtrx.C_16);
                     std::cout <<"Simple\t16x16 " << tmr.format();
         }));
-        }
-        if(j == 2) {
-        thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+        thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_32 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 32*32; i++)
@@ -94,9 +91,8 @@ void init_multiply_matrix() {
                     mult_siml<32, 32>(mtrx.A_32, mtrx.B_32, mtrx.C_32);
                     std::cout <<"Simple\t32x32 " << tmr.format();
             }));
-        }
-        if(j == 3) {
-        thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+        thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_64 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 64*64; i++)
@@ -110,11 +106,9 @@ void init_multiply_matrix() {
                     mult_siml<64, 64>(mtrx.A_64, mtrx.B_64, mtrx.C_64);
                     std::cout <<"Simple\t64x64 " << tmr.format();
             }));
-        }
-
             /////////META//////////////////////////////////////////
-            if(j == 4) {
-            thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+            thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_8 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 8*8; i++)
@@ -128,9 +122,8 @@ void init_multiply_matrix() {
                     mult_meta<8, 8>(mtrx.A_8, mtrx.B_8, mtrx.C_8);
                     std::cout <<"Metaprog 8x8 " << tmr.format();
             }));
-            }
-            if(j == 5) {
-                thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+            thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_16 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 16*16; i++)
@@ -144,9 +137,8 @@ void init_multiply_matrix() {
                     mult_meta<16, 16>(mtrx.A_16, mtrx.B_16, mtrx.C_16);
                     std::cout <<"Metaprog 16x16 " << tmr.format();
             }));
-            }
-            if(j == 6) {
-            thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+            thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_32 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 32*32; i++)
@@ -160,9 +152,8 @@ void init_multiply_matrix() {
                     mult_meta<32, 32>(mtrx.A_32, mtrx.B_32, mtrx.C_32);
                     std::cout <<"Metaprog 32x32 " << tmr.format();
             }));
-            }
-            if(j == 7) {
-            thrd.push_back(boost::thread([j, &mtrx, &gen, &dist]() mutable {
+
+            thrd.push_back(boost::thread([&mtrx, &gen, &dist]() mutable {
                     boost::lock_guard<boost::mutex> lock{mutex};
                     auto vec_64 = std::make_unique<std::vector<size_t>>();
                     for (size_t i = 0; i < 64*64; i++)
@@ -176,9 +167,6 @@ void init_multiply_matrix() {
                     mult_meta<64, 64>(mtrx.A_64, mtrx.B_64, mtrx.C_64);
                     std::cout <<"Metaprog 64x64 " << tmr.format();
             }));
-            }
-            
-        }
 
     for(auto& x : thrd) x.join();
 }
